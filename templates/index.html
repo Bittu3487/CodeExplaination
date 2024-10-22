@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Explanation Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+        }
+        #explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Code Explanation Tool</h1>
+    <form id="codeForm">
+        <label for="code">Paste your code here:</label>
+        <textarea id="code" name="code" required></textarea><br><br>
+        <button type="submit">Explain Code</button>
+    </form>
+    <div id="explanation"></div>
+
+    <script>
+        document.getElementById('codeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const code = document.getElementById('code').value;
+            const response = await fetch('/explain', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'code': code
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (result.explanation) {
+                document.getElementById('explanation').innerHTML = `<strong>Explanation:</strong><p>${result.explanation}</p>`;
+            } else {
+                document.getElementById('explanation').innerHTML = `<strong>Error:</strong><p>${result.error}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
